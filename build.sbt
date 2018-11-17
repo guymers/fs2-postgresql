@@ -1,11 +1,11 @@
-val catsVersion = "1.1.0"
-val fs2Version = "0.10.3"
+val fs2Version = "1.0.0"
+val catsVersion = "1.4.0" // version used by fs2
 
 lazy val commonSettings = Seq(
   name := "fs2-postgresql",
   organization := "com.github.guymers",
   licenses ++= Seq(("MIT", url("http://opensource.org/licenses/MIT"))),
-  scalaVersion := "2.12.4",
+  scalaVersion := "2.12.7",
   crossScalaVersions := Seq("2.11.12", scalaVersion.value),
 
   // https://tpolecat.github.io/2017/04/25/scalac-flags.html
@@ -71,7 +71,7 @@ lazy val commonSettings = Seq(
 lazy val `fs2-postgresql` = project.in(file("."))
   .settings(commonSettings)
   .settings(Seq(
-    addCompilerPlugin("org.spire-math" % "kind-projector" % "0.9.6" cross CrossVersion.binary),
+    addCompilerPlugin("org.spire-math" % "kind-projector" % "0.9.8" cross CrossVersion.binary),
 
     libraryDependencies ++= Seq(
       "com.chuusai" %% "shapeless" % "2.3.3",
@@ -81,14 +81,13 @@ lazy val `fs2-postgresql` = project.in(file("."))
 
       "co.fs2" %% "fs2-core" % fs2Version,
       "co.fs2" %% "fs2-io" % fs2Version,
-      "co.fs2" %% "fs2-scodec" % fs2Version,
 
-      "org.scodec" %% "scodec-bits" % "1.1.5",
+      "org.scodec" %% "scodec-bits" % "1.1.7",
       "org.scodec" %% "scodec-core" % "1.10.3",
 
       "org.typelevel" %% "cats-laws" % catsVersion % Test,
       "org.typelevel" %% "cats-kernel-laws" % catsVersion % Test,
-      "org.scalacheck" %% "scalacheck" % "1.13.5" % "test",
+      "org.scalacheck" %% "scalacheck" % "1.14.0" % "test",
       "org.scalatest" %% "scalatest" % "3.0.5" % "test"
     )
 

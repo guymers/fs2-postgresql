@@ -3,12 +3,11 @@ package com.github.guymers.fs2.postgresql
 import java.net.InetSocketAddress
 import java.nio.channels.AsynchronousChannelGroup
 
-import scala.concurrent.ExecutionContext
 import scala.concurrent.duration.FiniteDuration
 
 import cats.data.NonEmptyList
 import cats.data.Writer
-import cats.effect.Effect
+import cats.effect.ConcurrentEffect
 import cats.effect.Sync
 import cats.instances.string._
 import cats.syntax.either._
@@ -19,8 +18,8 @@ import cats.~>
 import com.github.guymers.fs2.postgresql.messages.MessageResponse.NotifyResponses
 import com.github.guymers.fs2.postgresql.messages._
 import fs2.Chunk
+import fs2.Chunk.ByteVectorChunk
 import fs2.Stream
-import fs2.interop.scodec.ByteVectorChunk
 import fs2.io.tcp.Socket
 import scodec.Attempt
 import scodec.Decoder
@@ -84,17 +83,18 @@ object PostgreSQLConnection {
     timeout: FiniteDuration
   )(implicit
     AG: AsynchronousChannelGroup,
-    F: Effect[F],
-    ec: ExecutionContext
+    F: ConcurrentEffect[F]
   ): Stream[F, PostgreSQLConnection[F]] = {
     val address = new InetSocketAddress(params.host, params.port)
 
     for {
-      socket <- fs2.io.tcp.client(
-        address,
-        sendBufferSize = sendBufferSize,
-        receiveBufferSize = receiveBufferSize
-      )
+      socket <- Stream.resource {
+        fs2.io.tcp.client(
+          address,
+          sendBufferSize = sendBufferSize,
+          receiveBufferSize = receiveBufferSize
+        )
+      }
       info <- {
         val msg = StartupMessage(params.user, params.database, None, Map.empty)
         val prog = for {

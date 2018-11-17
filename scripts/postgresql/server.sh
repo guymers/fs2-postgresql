@@ -5,4 +5,4 @@ readonly DIR="$(cd "$( dirname "${BASH_SOURCE[0]}")" && pwd)"
 
 source "$DIR/env.sh"
 
-docker run -ti --rm -p "5432:$POSTGRES_PORT" --env "POSTGRES_PASSWORD=$POSTGRES_PASSWORD" "postgres:$POSTGRES_VERSION"
+docker run --rm -p "5432:$POSTGRES_PORT" --env "POSTGRES_PASSWORD=$POSTGRES_PASSWORD" "postgres:$POSTGRES_VERSION"

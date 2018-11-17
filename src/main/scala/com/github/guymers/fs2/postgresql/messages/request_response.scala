@@ -60,7 +60,7 @@ object MessageRequestResponse {
               val m = PasswordMessage(pass)
               send(m)
           }
-          implicit val c3 = at[NegotiateProtocolVersion] { m =>
+          implicit val c3 = at[NegotiateProtocolVersion] { _ =>
             // This message will be followed by an ErrorResponse or a message indicating the success or failure of authentication.
             error[MessageResponse.PasswordResponses](new RuntimeException("no supported 1")) // FIXME
           }
